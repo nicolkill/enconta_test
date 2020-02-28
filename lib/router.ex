@@ -2,13 +2,13 @@ defmodule Enconta.Router do
   use Plug.Router
 
   plug Plug.Logger
-  plug Plug.Parsers, parsers: [:urlencoded, :multipart, :json], pass: ["*/*"], json_decoder: Jason
+  plug Plug.Parsers, parsers: [:json], pass: ["application/json"], json_decoder: Jason
   plug Plug.MethodOverride
   plug Plug.Head
   plug :match
   plug :dispatch
 
-  post "/" do
+  post "/calculate_players_payment" do
     response = Enconta.calculate_players_payment(conn.body_params["jugadores"])
 
     response = Jason.encode! %{data: response}

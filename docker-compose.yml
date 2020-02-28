@@ -4,12 +4,6 @@ services:
   app:
     image: nicolkill/enconta_test:latest
     ports:
-      - "8080:8080"
-    environment:
-      PORT: 8080
+      - "4000:4000"
     volumes:
       - .:/app
-
-networks:
-  proxy:
-    external: true

@@ -89,7 +89,7 @@ defmodule Enconta.RouterTest do
   test "returns test data" do
     conn =
       :post
-      |> conn("/", @test_data)
+      |> conn("/calculate_players_payment", @test_data)
       |> Router.call(@opts)
 
     resp_body = Jason.decode!(conn.resp_body)

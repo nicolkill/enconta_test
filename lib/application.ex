@@ -13,6 +13,6 @@ defmodule Enconta.Application do
     Supervisor.start_link(children, opts)
   end
 
-  defp cowboy_port, do: Application.get_env(:enconta_test, :cowboy_port, 8080)
+  defp cowboy_port, do: Application.get_env(:enconta_test, :cowboy_port, 4000)
 
 end
