@@ -9,9 +9,11 @@ defmodule Enconta.Router do
   plug :dispatch
 
   post "/calculate_players_payment" do
-    response = Enconta.calculate_players_payment(conn.body_params["jugadores"])
+    response = conn.body_params["jugadores"]
+    |> Enconta.calculate_players_payment
 
-    response = Jason.encode! %{data: response}
+    response = %{data: response}
+    |> Jason.encode!
 
     conn
     |> put_resp_header("content-type", "application/json")
