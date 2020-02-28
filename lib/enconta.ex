@@ -30,9 +30,9 @@ defmodule Enconta do
   end
 
   defp add_salary(player, data) do
-    %{"bono" => bono, "promedio" => promedio, "promedio_equipo" => promedio_equipo} = player
+    %{"bono" => bono, "promedio" => promedio, "promedio_equipo" => promedio_equipo, "sueldo" => sueldo} = player
 
-    sueldo_completo = bono * ((promedio_equipo + promedio) / 2)
+    sueldo_completo = (bono * ((promedio_equipo + promedio) / 2)) + sueldo
     |> Float.round(4)
 
     player = Map.put(player, "sueldo_completo", sueldo_completo)

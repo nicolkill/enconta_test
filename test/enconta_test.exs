@@ -47,7 +47,7 @@ defmodule EncontaTest do
       "goles" => 30,
       "sueldo" => 100000,
       "bono" => 30000,
-      "sueldo_completo" => 44250.0,
+      "sueldo_completo" => 144250.0,
       "equipo" => "azul"
     },
     %{
@@ -56,7 +56,7 @@ defmodule EncontaTest do
       "goles" => 7,
       "sueldo" => 20000,
       "bono" => 10000,
-      "sueldo_completo" => 14250.0,
+      "sueldo_completo" => 34250.0,
       "equipo" => "azul"
     },
     %{
@@ -65,7 +65,7 @@ defmodule EncontaTest do
       "goles" => 10,
       "sueldo" => 50000,
       "bono" => 25000,
-      "sueldo_completo" => 18125.0,
+      "sueldo_completo" => 68125.0,
       "equipo" => "rojo"
     },
     %{
@@ -74,7 +74,7 @@ defmodule EncontaTest do
       "goles" => 9,
       "sueldo" => 30000,
       "bono" => 15000,
-      "sueldo_completo" => 12625.0,
+      "sueldo_completo" => 42625.0,
       "equipo" => "rojo"
     }
   ]
