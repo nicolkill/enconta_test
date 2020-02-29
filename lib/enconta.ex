@@ -7,8 +7,7 @@ defmodule Enconta do
     "Cuauh" => 20
   }
 
-  defp add_level(player, data) do
-    %{"nivel" => level, "goles" => goles} = player
+  defp process_player(%{"nivel" => level, "goles" => goles} = player, data) do
     goles_minimos = Map.get(@levels, level)
 
     player = Map.put(player, "goles_minimos", goles_minimos)
@@ -18,7 +17,7 @@ defmodule Enconta do
     data ++ [player]
   end
 
-  defp add_team_average(data) do
+  defp process_player(data) do
     sumatoria = Enum.reduce(data, 0, &(&1["promedio"] + &2))
 
     Enum.reduce(data, [], fn player, acc ->
@@ -29,9 +28,7 @@ defmodule Enconta do
     end)
   end
 
-  defp add_salary(player, data) do
-    %{"bono" => bono, "promedio" => promedio, "promedio_equipo" => promedio_equipo, "sueldo" => sueldo} = player
-
+  defp process_player(%{"bono" => bono, "promedio" => promedio, "promedio_equipo" => promedio_equipo, "sueldo" => sueldo} = player, data) do
     sueldo_completo = (bono * ((promedio_equipo + promedio) / 2)) + sueldo
     |> Float.round(4)
 
@@ -52,12 +49,12 @@ defmodule Enconta do
 
   """
   def calculate_players_payment(data) do
-    Enum.reduce(data, [], &add_level/2)
+    Enum.reduce(data, [], &process_player/2)
     |> Enum.group_by(&(&1["equipo"]))
     |> Map.values
     |> Enum.reduce([], fn data, acc ->
-      data = add_team_average(data)
-      |> Enum.reduce([], &add_salary/2)
+      data = process_player(data)
+      |> Enum.reduce([], &process_player/2)
 
       acc ++ data
     end)
