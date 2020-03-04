@@ -92,9 +92,10 @@ defmodule Enconta.RouterTest do
       |> conn("/calculate_players_payment", @test_data)
       |> Router.call(@opts)
 
+    assert conn.status == 200
+
     resp_body = Jason.decode!(conn.resp_body)
 
-    assert conn.status == 200
     assert resp_body["data"] == @test_resp
   end
 

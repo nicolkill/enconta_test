@@ -79,7 +79,7 @@ defmodule EncontaTest do
     }
   ]
 
-  test "greets the world" do
-    assert Enconta.calculate_players_payment(@test_data) == @test_resp
+  test "calculates player salary" do
+    assert Enconta.FootballTeam.calculate_players_payment(@test_data) == @test_resp
   end
 end

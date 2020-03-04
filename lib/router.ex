@@ -1,26 +1,19 @@
 defmodule Enconta.Router do
-  use Plug.Router
+  use Enconta, :router
 
-  plug Plug.Logger
-  plug Plug.Parsers, parsers: [:json], pass: ["application/json"], json_decoder: Jason
-  plug Plug.MethodOverride
-  plug Plug.Head
-  plug :match
-  plug :dispatch
+  @doc """
+  Este modulo es para declarar endpoints, la declaracion es muy simple y similar a Phoenix Framework
+  Metodos aceptados: get, post, put, patch, delete
 
-  post "/calculate_players_payment" do
-    response = conn.body_params["jugadores"]
-    |> Enconta.calculate_players_payment
+  Examples:
 
-    response = %{data: response}
-    |> Jason.encode!
+  get "/example/:id", Module.AnythingController, :show
+  post "/example", Module.AnythingController, :create
+  put "/example/:id", Module.AnythingController, :update
+  patch "/example/:id", Module.AnythingController, :update
+  delete "/example/:id", Module.AnythingController, :erase
+  """
 
-    conn
-    |> put_resp_header("content-type", "application/json")
-    |> send_resp(200, response)
-  end
+  post "/calculate_players_payment", Enconta.TeamController, :calculate_players_payment
 
-  match _ do
-    send_resp(conn, 404, "Oops!")
-  end
 end
