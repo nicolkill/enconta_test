@@ -1,5 +1,7 @@
 use Mix.Config
 
-:ets.new(:routes, [:set, :public, :named_table])
+:ets.new(:routes, [:set, :public, :named_table, read_concurrency: true])
 
-config :enconta_test, cowboy_port: 4000
+{port, _} = (System.get_env("PORT") || "4000") |> Integer.parse
+
+config :enconta_test, cowboy_port: port

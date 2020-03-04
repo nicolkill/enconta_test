@@ -26,8 +26,8 @@ defmodule Enconta.RouterBase do
   Si sucede un error en la ejecucion del metodo externo este pasara la excepcion asi como va, habra falta configurar y
   crear un fallback_controller
   """
-  def request(%{method: method, request_path: request_path, params: params} = conn, _) do
-    key = to_key(method, request_path)
+  def request(%{method: method, request_path: path, params: params} = conn, _) do
+    key = to_key(method, path)
     {_, %{module: module, function: function}} = :ets.lookup(:routes, key) |> Enum.at(0)
 
     apply(module, function, [conn, params])
@@ -35,7 +35,7 @@ defmodule Enconta.RouterBase do
     _ in MatchError -> send_resp(conn, 404, "not found")
   end
 
-  defp to_key(method, path), do: "#{path}-#{method}" |> String.downcase |> String.to_atom
+  defp to_key(method, path), do: "#{path}-#{method}" |> String.downcase
   defp array_to_module(arr) when is_list(arr), do: ["Elixir"] ++ arr |> Enum.join(".") |> String.to_existing_atom
 
   defmacro match(method, path, module, function), do: add_path(method, path, module, function)
