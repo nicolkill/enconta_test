@@ -34,5 +34,5 @@ Para correrlo sin docker el comando es `mix test`
 
 ## Deploy
 
-Se puede hacer deploy de esta aplicacion haciendo push de la imagen
-docker
+Se hace el deploy automaticamente a heroku, pero si es necesario mandar
+a otro lado se puede hacer con la imagen docker
