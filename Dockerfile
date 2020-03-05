@@ -1,4 +1,4 @@
-FROM elixir:1.10
+FROM elixir:1.5
 
 RUN mix local.rebar --force
 RUN mix local.hex --force

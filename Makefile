@@ -1,6 +1,6 @@
 IMAGE_TAG := nicolkill/enconta_test
 REVISION=$(shell git rev-parse --short HEAD)
-RUN_STANDARD := docker run --rm -v `pwd`:/app -w /app elixir:1.10
+RUN_STANDARD := docker run --rm -v `pwd`:/app -w /app elixir:1.5
 RUN := docker run --rm -v `pwd`:/app -w /app nicolkill/enconta_test:latest
 
 all: build image
