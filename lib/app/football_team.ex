@@ -1,63 +1,48 @@
 defmodule Enconta.FootballTeam do
 
-  @levels %{
-    "A" => 5,
-    "B" => 10,
-    "C" => 15,
-    "Cuauh" => 20
-  }
+  alias Enconta.Model.Player
 
   @doc """
-  Agrega el minimo de goles dependiendo el nivel del jugador y el promedio individual y elimina el campo nivel ya que
-  no es necesario a partir de este punto
+  Transforma el row data a la estructura manejable Player
   """
-  defp process_player(%{"nivel" => level, "goles" => goles} = player, data) do
-    goles_minimos = Map.get(@levels, level)
+  def data_to_players(data) do
+    players = Enum.map(data, &Player.map_to_player/1)
 
-    player = player
-    |> Map.put("goles_minimos", goles_minimos)
-    |> Map.put("promedio", goles / goles_minimos)
-    |> Map.delete("nivel")
-
-    data ++ [player]
-  end
-
-  @doc """
-  Calcula el bono dinamico a partir de el promedio individual y el promedio de equipo
-  """
-  defp process_player(%{"bono" => bono, "promedio" => promedio, "promedio_equipo" => promedio_equipo} = player, data) do
-    sueldo_completo = bono * ((promedio_equipo + promedio) / 2)
-    |> Float.round(4)
-
-    player = player
-    |> Map.put("sueldo_completo", sueldo_completo)
-    |> Map.delete("promedio")
-    |> Map.delete("promedio_equipo")
-
-    data ++ [player]
-  end
-
-  @doc """
-  Hace la suma del sueldo a el bono
-  """
-  defp process_player(%{"sueldo_completo" => sueldo_completo, "sueldo" => sueldo} = player, data) do
-    player = Map.put(player, "sueldo_completo", sueldo_completo + sueldo)
-
-    data ++ [player]
+    {:ok, players}
+  rescue
+    e -> {:error, e}
   end
 
   @doc """
   Agrega el promedio de equipo a cada jugador del equipo
   """
-  defp process_player(data) do
-    sumatoria = Enum.reduce(data, 0, &(&1["promedio"] + &2))
+  def add_team_average(players) do
+    players = players
+    |> Enum.group_by(&(&1.equipo))
+    |> Map.values
+    |> Enum.map(fn players ->
+      sumatoria = Enum.reduce(players, 0, fn player, sum -> Player.get_average(player) + sum end)
 
-    Enum.reduce(data, [], fn player, acc ->
-      prom = sumatoria / length(data)
-      player = Map.put(player, "promedio_equipo", prom)
-
-      acc ++ [player]
+      Enum.map(players, fn player ->
+        Player.add_team_average(player, sumatoria / length(players))
+      end)
     end)
+    |> Enum.concat
+
+    {:ok, players}
+  rescue
+    e -> {:error, e}
+  end
+
+  @doc """
+  Transforma la data de Players a simple row data
+  """
+  def transform_to_row_data(players) do
+    data = Enum.map(players, fn player -> player |> Player.calculate_salary |> Player.to_row_data end)
+
+    {:ok, data}
+  rescue
+    e -> {:error, e}
   end
 
   @doc """
@@ -66,13 +51,11 @@ defmodule Enconta.FootballTeam do
   Estos se segmentan por el campo "equipo" y a partir de ahi se calculan los salarios
   """
   def calculate_players_payment(data) do
-    data
-    |> Enum.reduce([], &process_player/2)
-    |> Enum.group_by(&(&1["equipo"]))
-    |> Map.values
-    |> Enum.reduce([], fn data, acc -> acc ++ process_player(data) end)
-    |> Enum.reduce([], &process_player/2)
-    |> Enum.reduce([], &process_player/2) # Comenta esta linea si no quieres que sume el salario estatico al bono
+    with {:ok, players} <- data_to_players(data),
+         {:ok, players} <- add_team_average(players),
+         {:ok, data} <- transform_to_row_data(players) do
+      {:ok, data}
+    end
   end
 
 end

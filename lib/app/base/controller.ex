@@ -1,7 +1,7 @@
-defmodule Enconta.Controller do
+defmodule Enconta.Base.Controller do
   import Plug.Conn
 
-  @doc """
+  @moduledoc """
   Este modulo tiene helpers para los controladores
   """
 

@@ -3,14 +3,14 @@ defmodule Enconta do
   def controller do
     quote do
       import Plug.Conn
-      import Enconta.Controller
+      import Enconta.Base.Controller
     end
   end
 
   def router do
     quote do
-      use Enconta.RouterBase
-      import Enconta.RouterBase
+      use Enconta.Base.Router
+      import Enconta.Base.Router
 
       def init(opts), do: opts
       def call(conn, opts), do: request(conn, opts)

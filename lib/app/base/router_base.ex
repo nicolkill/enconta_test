@@ -1,4 +1,4 @@
-defmodule Enconta.RouterBase do
+defmodule Enconta.Base.Router do
   use Plug.Builder
 
   import Plug.Conn
@@ -8,7 +8,7 @@ defmodule Enconta.RouterBase do
   plug Plug.MethodOverride
   plug Plug.Head
 
-  alias Enconta.Route
+  alias Enconta.Model.Route
 
   @http_methods [:get, :post, :put, :patch, :delete]
 
@@ -54,12 +54,15 @@ defmodule Enconta.RouterBase do
         method = method |> String.downcase |> String.to_atom
         apply(__MODULE__, :call, [conn, params, method, path])
       rescue
-        e in FunctionClauseError-> send_resp(conn, 404, "not found")
+        e in FunctionClauseError -> send_resp(conn, 404, "not found")
+        e ->
+          message = Exception.message(e)
+          send_resp(conn, 500, Jason.encode!(%{ message: message }))
       end
 
       Module.register_attribute(__MODULE__, :routes, accumulate: true)
 
-      @before_compile Enconta.RouterBase
+      @before_compile Enconta.Base.Router
     end
   end
 
